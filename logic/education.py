@@ -91,3 +91,40 @@ def analyze_pre_matric_scholarship(profile: CitizenProfile):
         "benefits": ["Tuition and Maintenance Support"] if percentage == 100 else [],
         "missing": missing
     }
+def analyze_post_matric_scholarship(profile: CitizenProfile):
+    # HARD GUARD: Ensure post-matric enrollment
+    if (profile.class_level or 0) <= 10:
+        return {"scheme": "ePASS Post-Matric Scholarship", "percentage": 0, "benefits": [], "missing": ["Only for post-matriculation courses"]}
+
+    criteria = {
+        "Permanent Resident": profile.is_permanent_resident,
+        "Eligible Category": profile.caste_group in ["SC", "ST", "BC", "EBC", "Minority", "Disabled"],
+        "Income <= 2L": profile.annual_income <= 200000,
+        "Has Aadhaar/Bank Link": profile.has_aadhaar_bank_linked,
+        "Bonafide Certificate": profile.has_bonafide_certificate,
+        "CET Allotment (if Professional)": not profile.is_professional_course or profile.has_cet_allotment
+    }
+    
+    percentage, missing = calculate_score(criteria)
+    return {
+        "scheme": "ePASS Post-Matric Scholarship",
+        "percentage": percentage,
+        "benefits": ["Full tuition fee reimbursement", "Monthly maintenance allowance"] if percentage == 100 else [],
+        "missing": missing
+    }
+
+def analyze_skill_upgradation(profile: CitizenProfile):
+    criteria = {
+        "Eligible Category": profile.caste_group in ["SC", "ST", "BC", "EBC", "Minority"],
+        "Exam Registered": profile.has_exam_registration_receipt,
+        "Has Valid Scorecard": profile.has_test_scorecard,
+        "Income <= 5L": profile.annual_income <= 500000
+    }
+    
+    percentage, missing = calculate_score(criteria)
+    return {
+        "scheme": "Skill Upgradation (GRE, GMAT, TOEFL, IELTS)",
+        "percentage": percentage,
+        "benefits": ["Full reimbursement of examination fees"] if percentage == 100 else [],
+        "missing": missing
+    }
