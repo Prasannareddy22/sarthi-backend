@@ -2,34 +2,28 @@ from models import CitizenProfile
 from .utils import calculate_score  # Now importing the shared math utility
 
 def analyze_mahalakshmi(profile: CitizenProfile):
+    # Strictly check only the gender requirement
+    is_eligible = profile.gender in ["Female", "Transgender"]
 
-    if profile.gender not in ["Female", "Transgender"]:
+    if not is_eligible:
         return {
-            "scheme": "Mahalakshmi", 
-            "percentage": 0, 
-            "benefits": [], 
+            "scheme": "Mahalakshmi",
+            "percentage": 0,
+            "benefits": [],
             "missing": ["Gender Requirement (Must be Female/Transgender)"]
         }
 
-    criteria = {
-        "Is Female/Transgender": profile.gender in ["Female", "Transgender"],
-        "Is Head of Family": profile.is_head_of_family,
-        "Not a Tax Payer": not profile.is_income_tax_payer,
-        "Not a Gov Employee": not profile.is_government_employee,
-        "Income within limit": profile.annual_income <= 200000
+    # If the gender criteria is met, grant 100% eligibility immediately
+    return {
+        "scheme": "Mahalakshmi",
+        "percentage": 100,
+        "benefits": [
+            "Free TSRTC Bus Travel",
+            "Subsidized LPG Cylinder",
+            "Monthly Financial Assistance (₹2,500)"
+        ],
+        "missing": [] # No other criteria, so nothing is missing
     }
-    
-    percentage, missing = calculate_score(criteria)
-    
-    benefits = []
-    if profile.gender in ["Female", "Transgender"]:
-        benefits.append("Free TSRTC Bus Travel")
-    if profile.has_lpg_connection and profile.annual_income <= 200000:
-        benefits.append("Subsidized LPG Cylinder")
-    if percentage == 100: # Cleaner logic: if all criteria met, grant cash
-        benefits.append("Monthly Financial Assistance (₹2,500)")
-
-    return {"scheme": "Mahalakshmi", "percentage": percentage, "benefits": benefits, "missing": missing}
 
 def analyze_marriage_assistance(profile: CitizenProfile):
 

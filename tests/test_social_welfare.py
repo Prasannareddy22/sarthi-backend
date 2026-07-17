@@ -22,23 +22,18 @@ def base_profile():
         # All other fields have defaults in models.py, so they are not required here
     )
 
+# tests/test_social_welfare.py
+
 def test_mahalakshmi_full_eligibility(base_profile):
     result = analyze_mahalakshmi(base_profile)
-    assert result["percentage"] == 100.0
-    assert len(result["benefits"]) > 0
+    assert result["percentage"] == 100
+    assert len(result["benefits"]) == 3
 
 def test_mahalakshmi_gender_exclusion(base_profile):
     base_profile.gender = "Male"
     result = analyze_mahalakshmi(base_profile)
-    assert result["percentage"] < 100
-    assert "Is Female/Transgender" in str(result["missing"]) # Cast to string to search comfortably
+    assert result["percentage"] == 0
+    assert "Gender Requirement" in result["missing"][0]
 
-def test_mahalakshmi_income_threshold(base_profile):
-    base_profile.annual_income = 250000
-    result = analyze_mahalakshmi(base_profile)
-    assert "Income within limit" in str(result["missing"])
-
-def test_mahalakshmi_gov_employee_exclusion(base_profile):
-    base_profile.is_government_employee = True
-    result = analyze_mahalakshmi(base_profile)
-    assert "Not a Gov Employee" in str(result["missing"])
+# DELETE: test_mahalakshmi_income_threshold and test_mahalakshmi_gov_employee_exclusion
+# These are no longer valid because the scheme no longer checks these criteria.
