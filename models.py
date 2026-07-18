@@ -1,5 +1,19 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Any, Dict, List, Optional
+
+
+class VoiceExtractionRequest(BaseModel):
+    """A raw speech transcript to parse into partial form fields."""
+    transcript: str
+    language: str = "en"
+
+
+class VoiceExtractionResponse(BaseModel):
+    status: str
+    fields: Dict[str, Any]
+    warnings: List[str] = []
+    matched_language: str = "en"
+
 
 class CitizenProfile(BaseModel):
     # Core Info
