@@ -69,6 +69,16 @@ def test_hindi_keywords():
     assert fields["is_widow"] is True
 
 
+def test_hindi_name_strips_copula():
+    # The copula "है" must not be captured as part of the name.
+    fields = extract_profile("मेरा नाम सुरेश है, मैं BC वर्ग से हूँ", "hi")["fields"]
+    assert fields["name"] == "सुरेश"
+    assert fields["caste"] == "BC"
+    # Multi-word names are still preserved.
+    fields = extract_profile("मेरा नाम राज कुमार है", "hi")["fields"]
+    assert fields["name"] == "राज कुमार"
+
+
 def test_language_mismatch_warning():
     # Selected Telugu but spoke English -> mismatch flagged, still extracts.
     result = extract_profile("I am 30 years old", "te")

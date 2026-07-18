@@ -121,10 +121,13 @@ _NAME_MARKERS = [
 ]
 
 # Words that must never be mistaken for a name (e.g. "I am disabled").
+# Includes Hindi/Telugu copulas ("है"/"हूँ") so "मेरा नाम सुरेश है" -> "सुरेश".
 _NAME_STOPWORDS = {
     "a", "an", "the", "disabled", "pregnant", "married", "unmarried", "widow",
     "widowed", "male", "female", "poor", "old", "years", "year", "from",
     "single", "lactating", "rural", "urban", "farmer", "student",
+    "है", "हूँ", "हूं", "हैं", "नाम", "और",
+    "అని", "పేరు",
 }
 
 
