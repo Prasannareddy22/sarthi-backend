@@ -1,5 +1,17 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, Field
 from typing import Any, Dict, List, Optional
+
+
+class RegisterRequest(BaseModel):
+    name: str = Field(min_length=1, max_length=255)
+    email: EmailStr
+    password: str = Field(min_length=8, max_length=128)
+    phone: str = ""
+
+
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
 
 
 class VoiceExtractionRequest(BaseModel):
